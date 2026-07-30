@@ -1,0 +1,35 @@
+services:
+  auth-api:
+    build:
+      context: ../call-auth-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+      PORT: "8080"
+
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-secret}
+      LIVEKIT_URL: ${LIVEKIT_URL:-ws://livekit:7880}
+
+      DYNAMODB_ENDPOINT: ${DYNAMODB_ENDPOINT:-http://dynamodb-local:8000}
+      DYNAMODB_REGION: ${DYNAMODB_REGION:-us-east-1}
+      DYNAMODB_ACCESS_KEY: ${DYNAMODB_ACCESS_KEY:-local}
+      DYNAMODB_SECRET_KEY: ${DYNAMODB_SECRET_KEY:-local}
+
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017/optimus}
+
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_TTL: ${JWT_TTL:-8h}
+      COOKIE_NAME: ${COOKIE_NAME:-optimus_session}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+
+    networks:
+      - optimus-net
+
+networks:
+  optimus-net:
+    external: true
+    name: optimus-net

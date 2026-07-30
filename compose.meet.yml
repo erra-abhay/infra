@@ -1,0 +1,29 @@
+services:
+  meet:
+    build:
+      context: ../meet
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-devkey}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-secret}
+      LIVEKIT_URL: ${LIVEKIT_URL:-ws://livekit:7880}
+
+      OPTIMUS_AUTH_API_URL: ${OPTIMUS_AUTH_API_URL:-http://auth-api:8080}
+
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      COOKIE_NAME: ${COOKIE_NAME:-optimus_session}
+
+    networks:
+      - optimus-net
+
+networks:
+  optimus-net:
+    external: true
+    name: optimus-net
